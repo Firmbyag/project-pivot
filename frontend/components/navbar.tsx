@@ -54,15 +54,45 @@ import {
 import { TbLogin2 } from "react-icons/tb";
 import { useState } from "react";
 import { BiSearch } from "react-icons/bi";
+import { useRouter } from "next/navigation";
 
 export const Navbar = () => {
   const [city, setCity] = useState("");
+  const [neighbourhood, setNeighbourhood] = useState("");
+  const [ensino, setEnsino] = useState("");
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [isRegistering, setIsRegistering] = useState(false);
+  const router = useRouter();
 
   const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCity(e.target.value);
   };
-  const [neighbourhood, setNeighbourhood] = useState("");
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const handleSearch = async () => {
+    try {
+      // Construir a URL de busca com os parâmetros selecionados
+      const queryParams = new URLSearchParams({
+        city,
+        neighbourhood,
+        ensino,
+      });
+
+      // Navegar para a página de resultados de busca com os parâmetros
+      router.push(`/search?${queryParams.toString()}`);
+      
+      // Se necessário, você pode fazer uma requisição para o backend
+      // const response = await fetch(`/api/search?${queryParams.toString()}`);
+      // const data = await response.json();
+      // Tratar os dados retornados, se necessário
+
+    } catch (error) {
+      console.error("Error searching:", error);
+    }
+  };
+
+  const toggleRegistering = () => {
+    setIsRegistering(!isRegistering);
+  };
 
   const searchInput = (
     <Input
@@ -104,7 +134,7 @@ export const Navbar = () => {
           placeholder="Filtrar por cidade"
           selectedKeys={[city]}
           className="max-w-xs"
-          startContent={<BiSearch className="text-purple-900"/>}
+          startContent={<BiSearch className="text-purple-900" />}
           onChange={handleSelectionChange}
         >
           {navbarMenuCities.map((city) => (
@@ -116,10 +146,11 @@ export const Navbar = () => {
           variant="flat"
           size="md"
           placeholder="Filtrar por bairro"
-          startContent={<BiSearch className="text-purple-900"/>}
+          startContent={<BiSearch className="text-purple-900" />}
           className="max-w-xs"
+          onChange={(e) => setNeighbourhood(e.target.value)}
         >
-          {city == "niterio "
+          {city == "niterio"
             ? listNiteroiNeighborhood.map((city) => (
                 <SelectItem key={city.key}>{city.label}</SelectItem>
               ))
@@ -139,11 +170,11 @@ export const Navbar = () => {
           label=""
           variant="flat"
           placeholder="Filtrar por ensino"
-          selectedKeys={[city]}
+          selectedKeys={[ensino]}
           labelPlacement="outside"
-          startContent={<BiSearch className="text-purple-900"/>}
+          startContent={<BiSearch className="text-purple-900" />}
           className="max-w-xs"
-          onChange={handleSelectionChange}
+          onChange={(e) => setEnsino(e.target.value)}
         >
           {listGrausdeEnsino.map((ensino) => (
             <SelectItem key={ensino.key}>{ensino.label}</SelectItem>
@@ -153,67 +184,27 @@ export const Navbar = () => {
           className="hidden sm:flex basis-1/5 sm:basis-full"
           justify="end"
         >
-          <NavbarItem className="hidden sm:flex gap-2">
-            <Link
-              isExternal
-              aria-label="Discord"
-              href={siteConfig.links.discord}
+          <NavbarItem className="hidden md:flex">
+            <Button
+              color="secondary"
+              className="text-sm font-semibold bg-white"
+              startContent={<BiSearch size={20} className="text-slate-400" />}
+              variant="solid"
+              onPress={handleSearch} // Adiciona a ação de busca ao clicar no botão
             >
-              <DiscordIcon className="text-default-500" />
-            </Link>
-            <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-              <GithubIcon className="text-default-500" />
-            </Link>
-            {/* <ThemeSwitch /> */}
+            </Button>
           </NavbarItem>
-          <NavbarItem className="hidden lg:flex">{searchInput}</NavbarItem>
           <NavbarItem className="hidden md:flex">
             <Button
               color="secondary"
               className="text-sm font-semibold bg-purple-950"
-              startContent={
-                <TbLogin2 size={24} className="text-white" />
-              }
+              startContent={<TbLogin2 size={24} className="text-white" />}
               variant="solid"
               onPress={onOpen}
             >
               Fazer Login
             </Button>
           </NavbarItem>
-          <NavbarItem className="hidden md:flex">
-            <Dropdown>
-              <DropdownTrigger>
-                <Button
-                  className="bg-orange-500 light:bg-purple-900 text-white"
-                  isIconOnly
-                  // color="secondary"
-                  radius="full"
-                  variant="solid"
-                >
-                  <RiUserFill />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Static Actions">
-                <DropdownItem key="new">Meu Perfil</DropdownItem>
-                {/* <DropdownItem key="copy">Copy link</DropdownItem> */}
-                {/* <DropdownItem key="edit">Edit file</DropdownItem> */}
-                <DropdownItem
-                  key="delete"
-                  className="text-danger"
-                  color="danger"
-                >
-                  Sair
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </NavbarItem>
-        </NavbarContent>
-        <NavbarContent className="sm:hidden basis-1 pl-4" justify="end">
-          <Link isExternal aria-label="Github" href={siteConfig.links.github}>
-            <GithubIcon className="text-default-500" />
-          </Link>
-          <ThemeSwitch />
-          <NavbarMenuToggle />
         </NavbarContent>
         <NavbarMenu>
           {searchInput}
@@ -238,9 +229,9 @@ export const Navbar = () => {
           </div>
         </NavbarMenu>
       </NextUINavbar>
+
       <Modal
         className="absolute top-10 h-fit"
-        // size="xs"
         isOpen={isOpen}
         onOpenChange={onOpenChange}
       >
@@ -249,50 +240,111 @@ export const Navbar = () => {
             <>
               <ModalHeader className="flex flex-col gap-1">
                 <div className="flex-col items-baseline">
-                  <p className="text-lg text-orange-600">Faça Login</p>
+                  <p className="text-lg text-orange-600">
+                    {isRegistering ? "Cadastre-se" : "Faça Login"}
+                  </p>
                   <span className="text-xs font-light">
-                    ou crie seu cadastro
+                    {isRegistering ? "Insira suas informações para se cadastrar" : "ou crie seu cadastro"}
                   </span>
                 </div>
               </ModalHeader>
               <ModalBody>
-                <Input
-                  autoFocus
-                  endContent={
-                    <RiMailCheckFill className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                  }
-                  label="Email"
-                  placeholder="digite seu email"
-                  variant="bordered"
-                />
-                <Input
-                  endContent={
-                    <RiLockFill className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-                  }
-                  label="Password"
-                  placeholder="*********"
-                  type="password"
-                  variant="bordered"
-                />
-                <div className="flex py-2 px-1 justify-between">
-                  <Checkbox
-                    classNames={{
-                      label: "text-small",
-                    }}
-                  >
-                    Me lembrar
-                  </Checkbox>
-                  <Link color="primary" href="#" size="sm">
-                    Esqueceu sua senha ?
-                  </Link>
-                </div>
+                {isRegistering ? (
+                  <>
+                    <Input
+                      autoFocus
+                      label="Nome Completo"
+                      placeholder="Digite seu nome completo"
+                      variant="bordered"
+                    />
+                    <Input
+                      label="Email"
+                      placeholder="Digite seu email"
+                      variant="bordered"
+                      endContent={
+                        <RiMailCheckFill className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                      }
+                    />
+                    <Input
+                      label="CPF"
+                      placeholder="Digite seu CPF"
+                      variant="bordered"
+                    />
+                    <Input
+                      label="Telefone"
+                      placeholder="Digite seu telefone"
+                      variant="bordered"
+                    />
+                    <Input
+                      label="Senha"
+                      placeholder="*********"
+                      type="password"
+                      variant="bordered"
+                      endContent={
+                        <RiLockFill className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                      }
+                    />
+                    <Input
+                      label="Confirmar Senha"
+                      placeholder="*********"
+                      type="password"
+                      variant="bordered"
+                      endContent={
+                        <RiLockFill className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                      }
+                    />
+                  </>
+                ) : (
+                  <>
+                    <Input
+                      autoFocus
+                      label="Email ou CPF"
+                      placeholder="Digite seu email ou CPF"
+                      variant="bordered"
+                      endContent={
+                        <RiMailCheckFill className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                      }
+                    />
+                    <Input
+                      label="Senha"
+                      placeholder="*********"
+                      type="password"
+                      variant="bordered"
+                      endContent={
+                        <RiLockFill className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                      }
+                    />
+                    <div className="flex py-2 px-1 justify-between">
+                      <Checkbox
+                        classNames={{
+                          label: "text-small",
+                        }}
+                      >
+                        Me lembrar
+                      </Checkbox>
+                      <Link color="primary" href="#" size="sm">
+                        Esqueceu sua senha ?
+                      </Link>
+                    </div>
+                  </>
+                )}
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onClose}>
-                  Fechar
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Entrar
+                {isRegistering && (
+                  <Button color="secondary" onPress={toggleRegistering}>
+                    Voltar
+                  </Button>
+                )}
+                  {!isRegistering && (
+                    <Button color="secondary" onPress={toggleRegistering}>
+                      Cadastrar-se
+                    </Button>
+                  )}
+                <Button
+                  color="primary"
+                  onPress={isRegistering ? toggleRegistering : onClose}
+                >
+                  {isRegistering ? "Cadastrar" : "Entrar"}
                 </Button>
               </ModalFooter>
             </>
@@ -302,3 +354,4 @@ export const Navbar = () => {
     </>
   );
 };
+
