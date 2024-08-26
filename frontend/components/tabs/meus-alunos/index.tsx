@@ -61,7 +61,7 @@ const statusColorMap = {
 const TabContentMeusAlunos = () => {
   const [aluno, setAluno] = useState([]);
   const [alunos, setAlunos] = useState([]);
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const {
     register,
     setValue,
@@ -112,6 +112,7 @@ const TabContentMeusAlunos = () => {
       const data = await response.json();
       if (data) {
         getAllAlunos();
+        onClose()
         toast.success("Aluno cadastrado com sucesso");
       }
     } catch (error) {
@@ -134,13 +135,13 @@ const TabContentMeusAlunos = () => {
 
   const onClickOpenModal = () => {
     setValue("nome_aluno", "");
-    setValue("nome_responsavel", ""); 
+    setValue("nome_responsavel", "");
     setValue("cpf_responsavel", "");
     setValue("serie_periodo", "");
     setValue("ano", "");
     setValue("status", "");
     onOpen();
-  }
+  };
 
   const onClickDelete = async (user: any) => {
     try {
@@ -151,11 +152,9 @@ const TabContentMeusAlunos = () => {
           Authorization: `Bearer ${getToken()}`,
         },
       });
-      const data = await response.json();
-      if (data) {
-        toast.success("Aluno deletado com sucesso");
-        getAllAlunos();
-      }
+      await response.json();
+      toast.success("Aluno deletado com sucesso");
+      getAllAlunos();
     } catch (error) {
       toast.error("Erro ao deletar aluno");
     }
