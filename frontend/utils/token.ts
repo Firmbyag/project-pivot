@@ -1,3 +1,4 @@
+'use client'
 import { jwtDecode } from "jwt-decode"
 
 export const decodeToken = () => {
@@ -7,6 +8,6 @@ export const decodeToken = () => {
 }
 
 export const getToken = () => {
-    const storedToken = localStorage.getItem("bolsalivre_token")
+    const storedToken = localStorage.getItem("bolsalivre_token") ?? undefined
     return storedToken
 }

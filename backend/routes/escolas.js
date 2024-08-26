@@ -45,6 +45,25 @@ router.get("/:id", async (req, res) => {
   });
 });
 
+router.get('/:usuario_id', async (req, res) => {
+  const { usuario_id } = req.params;
+
+  const query = "SELECT e.* FROM escolas e JOIN usuario_escolas ue ON e.id = ue.escola_id WHERE ue.usuario_id = ?";
+
+  connection.query(query, [usuario_id], (err, results) => {
+    if (err) {
+      return res.status(500).send("Erro ao buscar a escola");
+    } else {
+      if (results.length === 0) {
+        return res.status(404).send("Escola não encontrada");
+      } else {
+        return res.status(200).send(results[0]);
+      }
+    }
+  });
+});
+
+
 router.post("/filtrar", async (req, res) => {
   // Obtém os filtros do corpo da requisição
   const { cidade, bairro, grau_ensino } = req.body;

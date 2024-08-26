@@ -66,7 +66,7 @@ router.post("/criar", authenticateToken, async (req, res) => {
     return res.status(400).send("Escola é necessário");
   }
   const query =
-    "INSERTO INTO alunos (nome_aluno, nome_responsavel, cpf_responsavel, serie_periodo, ano, status, escola_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    "INSERT INTO alunos (nome_aluno, nome_responsavel, cpf_responsavel, serie_periodo, ano, status, escola_id) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
   connection.query(
     query,
@@ -81,7 +81,7 @@ router.post("/criar", authenticateToken, async (req, res) => {
     ],
     (err, results) => {
       if (err) {
-        return res.status(500).send("Erro ao cadastrar aluno");
+        return res.status(500).send({ msg: err });
       } else {
         return res
           .status(200)
@@ -135,41 +135,31 @@ router.post("/atualizar", authenticateToken, async (req, res) => {
     ],
     (err, results) => {
       if (err) {
-        return callback(err, null);
+        return res.status(500).send("Erro interno no servidor")
       }
       if (results.affectedRows > 0) {
-        callback(null, "Aluno atualizado com sucesso");
+        return res.status(200).send("Aluno atualizado com sucesso");
       } else {
-        callback(null, "Aluno não encontrado");
+        return res.status(404).send("Aluno não encontrado")
       }
     }
   );
 });
 
 router.delete("/:id", authenticateToken, async (req, res) => {
-  const alunoId = req.params.id;
+  const id = req.params.id;
+  const query = "DELETE FROM alunos WHERE id = ?";
 
-  try {
-    // Verificar se o aluno pertence à escola do diretor
-    const [aluno] = await connection.query(
-      "SELECT * FROM alunos WHERE id = ? AND escola_id = ?",
-      [alunoId, req.user.id]
-    );
-
-    if (aluno.length === 0) {
-      return res.status(404).json({
-        message: "Aluno não encontrado ou não pertence à sua escola.",
-      });
+  connection.query(query, [id], (err, results) => {
+    if (err) {
+      return res.status(500).send("Erro interno no servidor")
     }
-
-    // Deletar o aluno
-    await connection.query("DELETE FROM alunos WHERE id = ?", [alunoId]);
-
-    res.json({ message: "Aluno deletado com sucesso." });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Erro interno do servidor." });
-  }
+    if (results.affectedRows > 0) {
+       return res.status(200).send("Aluno excluído com sucesso")
+    } else {
+      return res.status(404).send("Aluno não encontrado")
+    }
+  });
 });
 
 module.exports = router;

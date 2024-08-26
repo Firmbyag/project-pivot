@@ -63,7 +63,6 @@ import { BiLogIn, BiSearch } from "react-icons/bi";
 // import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import {
-  pickFromLocalStorage,
   removeFromLocalStorage,
   saveInLocalStorage,
 } from "@/utils/localstorage";
@@ -271,7 +270,7 @@ export const Navbar = () => {
             ></Button>
           </NavbarItem>
           <NavbarItem className="hidden md:flex">
-            {tokenUserLogged ? (
+            {tokenUserLogged !== undefined ? (
               <Popover showArrow placement="bottom">
                 <PopoverTrigger>
                   <Avatar

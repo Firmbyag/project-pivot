@@ -5,6 +5,7 @@ import {
   Card,
   CardBody,
   CardHeader,
+  Chip,
   getKeyValue,
   Input,
   Modal,
@@ -18,10 +19,16 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
+  Tooltip,
   useDisclosure,
+  User,
 } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import { BiEdit } from "react-icons/bi";
+import { LuDelete } from "react-icons/lu";
+import { TbEyeDiscount } from "react-icons/tb";
 
 const columns = [
   {
@@ -40,7 +47,16 @@ const columns = [
     key: "status",
     label: "Status",
   },
+  {
+    key: "actions",
+    label: "Ações",
+  },
 ];
+
+const statusColorMap = {
+  Ativo: "success",
+  inativo: "danger",
+};
 
 const TabContentMeusAlunos = () => {
   const [aluno, setAluno] = useState([]);
@@ -48,25 +64,14 @@ const TabContentMeusAlunos = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const {
     register,
+    setValue,
     watch,
     getValues,
     formState: { errors },
   } = useForm();
-
-  const onSaveAluno = () => {
-    const {
-      nome_aluno,
-      nome_responsavel,
-      cpf_responsavel,
-      serie_periodo,
-      ano,
-      status,
-    } = getValues();
-  };
-
   const escola_id = 1;
 
-  useEffect(() => {
+  const getAllAlunos = async () => {
     fetch(`http://localhost:4000/alunos/meus-alunos/${escola_id}`, {
       headers: {
         "Content-Type": "application/json",
@@ -75,9 +80,150 @@ const TabContentMeusAlunos = () => {
     })
       .then((response) => response.json())
       .then((data) => setAlunos(data));
+  };
+
+  const onSaveAluno = async () => {
+    const {
+      nome_aluno,
+      nome_responsavel,
+      cpf_responsavel,
+      serie_periodo,
+      ano,
+      status,
+    } = getValues();
+
+    try {
+      const response = await fetch("http://localhost:4000/alunos/criar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({
+          nome_aluno,
+          nome_responsavel,
+          cpf_responsavel,
+          serie_periodo,
+          ano,
+          status,
+          escola_id,
+        }),
+      });
+      const data = await response.json();
+      if (data) {
+        getAllAlunos();
+        toast.success("Aluno cadastrado com sucesso");
+      }
+    } catch (error) {
+      toast.error("Erro ao criar aluno");
+    }
+  };
+
+  const onClickViewDetails = (user) => {
+    Object.keys(user).map((key) => {
+      setValue(key, user[key]);
+    });
+    onOpen();
+  };
+  const onClickEditDetails = (user: any) => {
+    Object.keys(user).map((key) => {
+      setValue(key, user[key]);
+    });
+    onOpen();
+  };
+
+  const onClickDelete = async (user: any) => {
+    try {
+      const response = await fetch(`http://localhost:4000/alunos/${user.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`,
+        },
+      });
+      const data = await response.json();
+      if (data) {
+        toast.success("Aluno deletado com sucesso");
+        getAllAlunos();
+      }
+    } catch (error) {
+      toast.error("Erro ao deletar aluno");
+    }
+  };
+
+  const renderAlunoCell = React.useCallback((user, columnKey) => {
+    const cellValue = user[columnKey];
+
+    switch (columnKey) {
+      case "nome_aluno":
+        return (
+          <User
+            avatarProps={{
+              radius: "lg",
+              src: "https://nextui.org/images/avatar.jpg",
+            }}
+            description={user.serie_periodo}
+            name={cellValue}
+          >
+            {user.nome_aluno}
+          </User>
+        );
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-sm capitalize">{cellValue}</p>
+            <p className="text-bold text-sm capitalize text-default-400">
+              {user.team}
+            </p>
+          </div>
+        );
+      case "status":
+        return (
+          <Chip
+            className="capitalize"
+            color={statusColorMap[user.status]}
+            size="sm"
+            variant="flat"
+          >
+            {cellValue}
+          </Chip>
+        );
+      case "actions":
+        return (
+          <div className="relative flex items-center gap-2">
+            <Tooltip content="Ver Detalhes">
+              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                <TbEyeDiscount
+                  className="text-secondary"
+                  onClick={() => onClickViewDetails(user)}
+                />
+              </span>
+            </Tooltip>
+            <Tooltip content="Editar aluno">
+              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                <BiEdit
+                  className="text-primary"
+                  onClick={() => onClickEditDetails(user)}
+                />
+              </span>
+            </Tooltip>
+            <Tooltip color="danger" content="Deletar">
+              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                <LuDelete
+                  className="text-red-600"
+                  onClick={() => onClickDelete(user)}
+                />
+              </span>
+            </Tooltip>
+          </div>
+        );
+      default:
+        return cellValue;
+    }
   }, []);
 
-  console.log("alunos", alunos);
+  useEffect(() => {
+    getAllAlunos();
+  }, []);
 
   return (
     <div className="w-full h-full">
@@ -103,116 +249,11 @@ const TabContentMeusAlunos = () => {
                 return (
                   <TableRow key={item.id}>
                     {(columnKey) => (
-                      <TableCell>{getKeyValue(item, columnKey)}</TableCell>
+                      <TableCell>{renderAlunoCell(item, columnKey)}</TableCell>
                     )}
                   </TableRow>
                 );
               }}
-              {/* <TableRow key="1">
-                <TableCell>Tony Reichert</TableCell>
-                <TableCell>CEO</TableCell>
-                <TableCell>CEO</TableCell>
-                <TableCell>Active</TableCell>
-                <TableCell>
-                  <div className="flex flex-row gap-1">
-                    <Button
-                      isIconOnly
-                      onPress={onOpen}
-                      variant="shadow"
-                      radius="full"
-                    >
-                      <BiEdit className="text-primary" />
-                    </Button>
-                    <Button isIconOnly variant="shadow" radius="full">
-                      <LuDelete className="text-red-600" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-              <TableRow key="2">
-                <TableCell>Zoey Lang</TableCell>
-                <TableCell>Technical Lead</TableCell>
-                <TableCell>Paused</TableCell>
-                <TableCell>Paused</TableCell>
-                <TableCell>
-                  <div className="flex flex-row gap-1">
-                    <Button
-                      isIconOnly
-                      onPress={onOpen}
-                      variant="shadow"
-                      radius="full"
-                    >
-                      <BiEdit className="text-primary" />
-                    </Button>
-                    <Button isIconOnly variant="shadow" radius="full">
-                      <LuDelete className="text-red-600" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-              <TableRow key="3">
-                <TableCell>Jane Fisher</TableCell>
-                <TableCell>Senior Developer</TableCell>
-                <TableCell>Senior Developer</TableCell>
-                <TableCell>Active</TableCell>
-                <TableCell>
-                  <div className="flex flex-row gap-1">
-                    <Button
-                      isIconOnly
-                      onPress={onOpen}
-                      variant="shadow"
-                      radius="full"
-                    >
-                      <BiEdit className="text-primary" />
-                    </Button>
-                    <Button isIconOnly variant="shadow" radius="full">
-                      <LuDelete className="text-red-600" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-              <TableRow key="4">
-                <TableCell>William Howard</TableCell>
-                <TableCell>Community Manager</TableCell>
-                <TableCell>Community Manager</TableCell>
-                <TableCell>Vacation</TableCell>
-                <TableCell>
-                  <div className="flex flex-row gap-1">
-                    <Button
-                      isIconOnly
-                      onPress={onOpen}
-                      variant="shadow"
-                      radius="full"
-                    >
-                      <BiEdit className="text-primary" />
-                    </Button>
-                    <Button isIconOnly variant="shadow" radius="full">
-                      <LuDelete className="text-red-600" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-              <TableRow key="5">
-                <TableCell>William Howard</TableCell>
-                <TableCell>Community Manager</TableCell>
-                <TableCell>Community Manager</TableCell>
-                <TableCell>Vacation</TableCell>
-                <TableCell>
-                  <div className="flex flex-row gap-1">
-                    <Button
-                      isIconOnly
-                      onPress={onOpen}
-                      variant="shadow"
-                      radius="full"
-                    >
-                      <BiEdit className="text-primary" />
-                    </Button>
-                    <Button isIconOnly variant="shadow" radius="full">
-                      <LuDelete className="text-red-600" />
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow> */}
             </TableBody>
           </Table>
         </CardBody>
