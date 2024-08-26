@@ -1,15 +1,13 @@
 // db.js
 const mysql = require('mysql2');
 
-// Criação da conexão com o banco de dados
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'mypassword',  // Substitua pela senha real do seu banco de dados
-  database: 'bolsalivre'  // Substitua pelo nome real do seu banco de dados
+  password: 'mypassword',
+  database: 'bolsalivre'
 });
 
-// Conectar ao banco de dados
 connection.connect(err => {
   if (err) {
     console.error('Erro ao conectar ao banco de dados: ', err);

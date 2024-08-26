@@ -20,7 +20,6 @@ const bairros = require('./routes/bairros')
 const bolsas = require('./routes/bolsas')
 const cidades = require('./routes/cidades')
 const ensino = require('./routes/ensino')
-const diretores = require('./routes/diretores')
 const escolas = require('./routes/escolas')
 const usuarios = require('./routes/usuarios')
 
@@ -30,11 +29,10 @@ app.use('/bairros', bairros)
 app.use('/bolsas', bolsas)
 app.use('/cidades', cidades)
 app.use('/ensino', ensino)
-app.use('/diretores', diretores)
 app.use('/escolas', escolas)
 app.use('/usuarios', usuarios)
 
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Servidor escutando na porta ${port}`)
 })
