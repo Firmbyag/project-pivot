@@ -31,9 +31,36 @@ import { LuShoppingCart } from "react-icons/lu";
 const BolsasPage = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [city, setCity] = useState("");
+  const [ensino, setEnsino] = useState("");
+  const [bairro, setBairro] = useState("");
+  const [valor, setValor] = useState("");
 
-  const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setCity(e.target.value);
+  const handleSelectionChange = (e: React.ChangeEvent<HTMLSelectElement>, type: string) => {
+    const value = e.target.value;
+    
+    if (type === "city") setCity(value);
+    if (type === "ensino") setEnsino(value);
+    if (type === "bairro") setBairro(value);
+    if (type === "valor") setValor(value);
+
+  };
+
+  const handleSearch = () => {
+    const filtros = {
+      city,
+      ensino,
+      bairro,
+      valor,
+    };
+
+    localStorage.setItem("bolsasFiltros", JSON.stringify(filtros));
+
+    fetch('/api/bolsas', { method: 'POST', body: JSON.stringify(filtros) })
+    .then(response => response.json())
+    .then(data => console.log(data));
+
+    
+    console.log("Filtros Salvos:", filtros);
   };
 
   return (
@@ -49,24 +76,25 @@ const BolsasPage = () => {
       </div>
       <div className="flex flex-row items-center gap-2">
         <Select
-          label=""
+          aria-label="Filtrar por cidade"
           variant="flat"
           placeholder="Filtrar por cidade"
           selectedKeys={[city]}
           labelPlacement="outside"
           className="max-w-xs"
-          onChange={handleSelectionChange}
+          onChange={(e) => handleSelectionChange(e, "city")}
         >
           {navbarMenuCities.map((city) => (
             <SelectItem key={city.key}>{city.label}</SelectItem>
           ))}
         </Select>
         <Select
-          label=""
+          aria-label="Filtrar por bairro"
           variant="flat"
           size="md"
           placeholder="Filtrar por bairro"
           className="max-w-xs"
+          onChange={(e) => handleSelectionChange(e, "bairro")}
         >
           {city == "niterio "
             ? listNiteroiNeighborhood.map((neighbourhood) => (
@@ -93,32 +121,32 @@ const BolsasPage = () => {
               ))}
         </Select>
         <Select
-          label=""
+          aria-label="Filtrar por ensino"
           variant="flat"
           placeholder="Filtrar por ensino"
-          selectedKeys={[city]}
+          selectedKeys={[ensino]}
           labelPlacement="outside"
           className="max-w-xs"
-          onChange={handleSelectionChange}
+          onChange={(e) => handleSelectionChange(e, "ensino")}
         >
           {listGrausdeEnsino.map((ensino) => (
             <SelectItem key={ensino.key}>{ensino.label}</SelectItem>
           ))}
         </Select>
         <Select
-          label=""
+          aria-label="Filtrar por valor"
           variant="flat"
           placeholder="Filtrar por valor"
-          selectedKeys={[city]}
+          selectedKeys={[valor]}
           labelPlacement="outside"
           className="max-w-xs"
-          onChange={handleSelectionChange}
+          onChange={(e) => handleSelectionChange(e, "valor")}
         >
-          {filtroporValor.map((ensino) => (
-            <SelectItem key={ensino.key}>{ensino.label}</SelectItem>
+          {filtroporValor.map((valor) => (
+            <SelectItem key={valor.key}>{valor.label}</SelectItem>
           ))}
         </Select>
-        <Button color="secondary" isIconOnly radius="full">
+        <Button color="secondary" onPress={handleSearch} radius="full">
           <SearchIcon />
         </Button>
       </div>
