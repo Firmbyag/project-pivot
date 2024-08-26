@@ -4,6 +4,7 @@ const connection = require("../db-service/index");
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 
+
 const app = express();
 app.use(
   express.urlencoded({
@@ -90,7 +91,7 @@ router.post("/cadastro", async (req, res) => {
   );
 });
 
-router.post("/alterar-senha", async (req, res) => {
+router.post("/alterar-senha",  async (req, res) => {
   const { email, novaSenha } = req.body;
 
   if (!nome) {

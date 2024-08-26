@@ -48,7 +48,7 @@ const SchoolCard = ({
         />
       </CardBody>
       <CardFooter>
-        <Button color="secondary" variant="flat" size="sm" onPress={onOpen}>
+        <Button className="text-white" color="primary" size="sm" onPress={onOpen}>
           Ver Bolsa
         </Button>
       </CardFooter>

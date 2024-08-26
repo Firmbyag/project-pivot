@@ -39,8 +39,8 @@ const BolsasPage = () => {
   return (
     <div className="w-full h-full flex flex-col gap-4">
       <div className="flex flex-col items-baseline">
-        <p className="text-lg font-semibold text-purple-800">
-          Bolsas cadastrar em nossa plataforma
+        <p className="text-lg font-semibold text-secondary">
+          Todas as bolsas cadastradas em nossa plataforma
         </p>
         <span className="text-xs font-light">
           aplique os filtros para ver as bolsas cadastradas em nossas
@@ -118,8 +118,8 @@ const BolsasPage = () => {
             <SelectItem key={ensino.key}>{ensino.label}</SelectItem>
           ))}
         </Select>
-        <Button color="secondary" isIconOnly radius="full">
-          <SearchIcon />
+        <Button color="secondary" isIconOnly radius="lg">
+          <SearchIcon className="text-white" />
         </Button>
       </div>
       <div className="flex flex-row items-center gap-4 flex-wrap my-12">
@@ -133,7 +133,7 @@ const BolsasPage = () => {
           {(onClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                <p className="text-2xl font-semibold dark:text-purple-700 text-orange-600">
+                <p className="text-2xl font-semibold dark:text-secondary text-primary">
                   Nome da Escola
                 </p>
                 <small className="text-default-500">Cidade:</small>

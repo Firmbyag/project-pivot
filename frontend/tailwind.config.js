@@ -8,8 +8,30 @@ module.exports = {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: "#f97316",
+        secondary: "#243373"
+      }
+    },
   },
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [nextui({
+    defaultTheme: "light",
+    defaultExtendTheme: "light",
+    themes: {
+      light: {
+        colors: {
+          primary: "#f97316",
+          secondary: "#243373"
+        },
+      },
+      dark: {
+        colors: {
+          primary: "#243373",
+          secondary: "#f97316"
+        },
+      },
+    },
+  }),],
 };

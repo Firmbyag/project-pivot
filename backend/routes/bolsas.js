@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const connection = require("../db-service/index");
 const verifyDiretor = require("../middleware/verifyDiretorRole.js");
+const authenticateToken = require("../middleware/authMiddleware.js");
+
 
 // middleware específico para este roteador
 router.use((req, res, next) => {
@@ -41,7 +43,7 @@ router.get('/:id', (req, res) => {
   });
 });
 
-router.post("/criar", verifyDiretor, async (req, res) => {
+router.post("/criar", authenticateToken, async (req, res) => {
   const {
     etapa,
     serie,
@@ -108,7 +110,7 @@ router.post("/criar", verifyDiretor, async (req, res) => {
 
 });
 
-router.put('/atualizar/:escolaId', async (req, res) => {
+router.put('/atualizar/:escolaId', authenticateToken, async (req, res) => {
   const escolaId = req.params.escolaId;
   const {
       etapa,
@@ -158,7 +160,7 @@ router.put('/atualizar/:escolaId', async (req, res) => {
   }
 });
 
-router.delete('/:escolaId/:bolsaId', async (req, res) => {
+router.delete('/:escolaId/:bolsaId', authenticateToken, async (req, res) => {
   const escolaId = req.params.escolaId;
   const bolsaId = req.params.bolsaId;
 

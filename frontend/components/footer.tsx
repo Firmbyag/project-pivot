@@ -6,7 +6,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <div className="bg-orange-500 dark:bg-purple-800 w-full flex items-center flex-wrap justify-around py-6">
+    <div className="bg-[#243373] w-full flex items-center flex-wrap justify-around py-6">
       <div className=" text-white flex flex-col items-baseline">
         <h3 className="font-semibold">Parceiros</h3>
         <Link

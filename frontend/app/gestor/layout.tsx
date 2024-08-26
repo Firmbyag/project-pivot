@@ -27,12 +27,24 @@ import { PiChalkboardTeacherDuotone } from "react-icons/pi";
 import { FaSchoolFlag } from "react-icons/fa6";
 import { BiSolidOffer } from "react-icons/bi";
 import { PiStudentDuotone } from "react-icons/pi";
-import React from "react";
+import React, { useEffect } from "react";
+import { pickFromLocalStorage } from "@/utils/localstorage";
+import { decodeToken } from "@/utils/token";
+import TabContentMinhasOfertas from "@/components/tabs/minhas-ofertas";
+import TabContentMeusAlunos from "@/components/tabs/meus-alunos";
 
 const LayoutGestor = () => {
+  const { role } = decodeToken();
+
+  useEffect(() => {
+    if (role === "user") {
+      window.location.href = "/";
+    }
+  });
+
   return (
     <div>
-      <Tabs color="secondary" variant="bordered" aria-label="Options">
+      <Tabs color="primary" variant="underlined" aria-label="Options">
         <Tab
           key="painel-gestor"
           title={
@@ -218,48 +230,7 @@ const LayoutGestor = () => {
             </div>
           }
         >
-          <Card>
-            <CardHeader>
-              <div className="flex flex-row items-center justify-between w-full">
-                <p className="text-lg font-semibold">Minhas Ofertas</p>
-                <ButtonGroup>
-                  <Button color="success">Adicionar</Button>
-                  <Button color="secondary">Publicar Ofertas</Button>
-                </ButtonGroup>
-              </div>
-            </CardHeader>
-            <CardBody>
-              <Table aria-label="Example static collection table">
-                <TableHeader>
-                  <TableColumn>NAME</TableColumn>
-                  <TableColumn>ROLE</TableColumn>
-                  <TableColumn>STATUS</TableColumn>
-                </TableHeader>
-                <TableBody>
-                  <TableRow key="1">
-                    <TableCell>Tony Reichert</TableCell>
-                    <TableCell>CEO</TableCell>
-                    <TableCell>Active</TableCell>
-                  </TableRow>
-                  <TableRow key="2">
-                    <TableCell>Zoey Lang</TableCell>
-                    <TableCell>Technical Lead</TableCell>
-                    <TableCell>Paused</TableCell>
-                  </TableRow>
-                  <TableRow key="3">
-                    <TableCell>Jane Fisher</TableCell>
-                    <TableCell>Senior Developer</TableCell>
-                    <TableCell>Active</TableCell>
-                  </TableRow>
-                  <TableRow key="4">
-                    <TableCell>William Howard</TableCell>
-                    <TableCell>Community Manager</TableCell>
-                    <TableCell>Vacation</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </CardBody>
-          </Card>
+          <TabContentMinhasOfertas/>
         </Tab>
         <Tab
           key="meus-alunos"
@@ -270,45 +241,7 @@ const LayoutGestor = () => {
             </div>
           }
         >
-          <Card>
-            <CardHeader>
-              <div className="flex flex-row items-center justify-between w-full">
-                <p className="text-lg font-semibold">Meus Alunos</p>
-                <Button color="secondary">Cadastrar</Button>
-              </div>
-            </CardHeader>
-            <CardBody>
-              <Table aria-label="Example static collection table">
-                <TableHeader>
-                  <TableColumn>NAME</TableColumn>
-                  <TableColumn>ROLE</TableColumn>
-                  <TableColumn>STATUS</TableColumn>
-                </TableHeader>
-                <TableBody>
-                  <TableRow key="1">
-                    <TableCell>Tony Reichert</TableCell>
-                    <TableCell>CEO</TableCell>
-                    <TableCell>Active</TableCell>
-                  </TableRow>
-                  <TableRow key="2">
-                    <TableCell>Zoey Lang</TableCell>
-                    <TableCell>Technical Lead</TableCell>
-                    <TableCell>Paused</TableCell>
-                  </TableRow>
-                  <TableRow key="3">
-                    <TableCell>Jane Fisher</TableCell>
-                    <TableCell>Senior Developer</TableCell>
-                    <TableCell>Active</TableCell>
-                  </TableRow>
-                  <TableRow key="4">
-                    <TableCell>William Howard</TableCell>
-                    <TableCell>Community Manager</TableCell>
-                    <TableCell>Vacation</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </CardBody>
-          </Card>
+          <TabContentMeusAlunos/>
         </Tab>
       </Tabs>
     </div>

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const connection = require("../db-service/index");
 const verifyDiretor = require("../middleware/verifyDiretorRole.js");
+const authenticateToken = require("../middleware/authMiddleware.js");
 
 // middleware específico para este roteador
 router.use((req, res, next) => {
@@ -13,25 +14,29 @@ router.get("/ajuda", (req, res) => {
   res.send("Ajuda sobre Students");
 });
 
-router.get("/meus-alunos", verifyDiretor, async (req, res) => {
+router.get("/meus-alunos/:escola_id", authenticateToken, async (req, res) => {
+  const escola_id = req.params.escola_id;
+  const query = "SELECT * FROM alunos WHERE escola_id = ?";
+
   try {
-    const [rows] = await connection.query(
-      "SELECT * FROM alunos WHERE escola_id = ?",
-      [req.user.id]
-    );
-
-    if (rows.length === 0) {
-      return res.status(404).json({ message: "Nenhum aluno encontrado" });
-    }
-
-    res.json(rows);
+    connection.query(query, [escola_id], (err, results) => {
+      if (err) {
+        return res.status(500).send("Erro ao buscar alunos");
+      } else {
+        if (results.length === 0) {
+          return res.status(404).send("Alunos não encontrados");
+        } else {
+          return res.status(200).send(results);
+        }
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error." });
   }
 });
 
-router.post("/criar", verifyDiretor, async (req, res) => {
+router.post("/criar", authenticateToken, async (req, res) => {
   const {
     nome_aluno,
     nome_responsavel,
@@ -86,7 +91,7 @@ router.post("/criar", verifyDiretor, async (req, res) => {
   );
 });
 
-router.post("/atualizar", verifyDiretor, async (req, res) => {
+router.post("/atualizar", authenticateToken, async (req, res) => {
   const {
     nome_aluno,
     nome_responsavel,
@@ -141,7 +146,7 @@ router.post("/atualizar", verifyDiretor, async (req, res) => {
   );
 });
 
-router.delete("/:id", verifyDiretor, async (req, res) => {
+router.delete("/:id", authenticateToken, async (req, res) => {
   const alunoId = req.params.id;
 
   try {

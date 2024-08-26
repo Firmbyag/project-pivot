@@ -1,12 +1,5 @@
 "use client";
-import { Link } from "@nextui-org/link";
-import { Snippet } from "@nextui-org/snippet";
-import { Code } from "@nextui-org/code";
-import { button as buttonStyles } from "@nextui-org/theme";
 
-import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
 import {
   Button,
   Card,
@@ -16,31 +9,22 @@ import {
   Divider,
   Image,
 } from "@nextui-org/react";
+import { Toaster } from "react-hot-toast";
 import { RiArrowGoBackFill, RiArrowGoForwardFill } from "react-icons/ri";
 
 export default function Home() {
   return (
     <section className="flex flex-col items-center justify-center md:py-10">
-      {/* <h2 className="text-2xl text-purple-800 font-semibold text-left">Filtrar por tipo de Ensino:</h2> */}
       <div className="flex flex-col items-center font-bold justify-center gap-2">
         <Image src="https://bolsalivre.com/front/img/logo_novo_bolsalivre.png" width={300} />
-        <h2 className="text-5xl text-purple-950 flex flex-col">
+        <h2 className="text-5xl text-secondary flex flex-col">
           Tenha acesso as melhores <br />{" "}
-          <b className="text-orange-600">Bolsas Escolas</b>
+          <b className="text-orange-600">Bolsas Escolares</b>
         </h2>
-        {/* <div className="w-full font-normal flex flex-col">
-          <span className="text-base">
-            Nós da Bolsa Livre listamos as melhores bolsas escolares para seu
-            filho
-          </span>
-          <span className=" font-semibold text-purple-600">
-            independente da idade, e ensino.
-          </span>
-        </div> */}
       </div>
       <div className="flex flex-col gap-6 my-8">
         <div className="flex-col items-baseline w-full">
-          <p className="text-2xl text-purple-950 font-bold">
+          <p className="text-2xl text-secondary font-bold">
             Buscar bolsas por ensino:
           </p>
           <span className="text-xs font-light">
@@ -138,7 +122,7 @@ export default function Home() {
         </div>
         <div className="flex flex-col gap-6">
           <div className="flex-col items-baseline">
-            <p className="text-2xl text-purple-950 font-bold">
+            <p className="text-2xl text-secondary font-bold">
               Colégio particulares:
             </p>
             <span className="text-xs font-light">
@@ -173,7 +157,7 @@ export default function Home() {
             </Button>
           </div>
           <div className="flex-col items-baseline">
-            <h3 className="text-2xl text-purple-950 font-bold">
+            <h3 className="text-2xl text-secondary font-bold">
               Transformando vidas e histórias
             </h3>
             <span className="text-xs font-light">
@@ -265,6 +249,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <Toaster position="top-center"/>
     </section>
   );
 }
