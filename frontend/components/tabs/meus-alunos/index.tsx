@@ -132,6 +132,16 @@ const TabContentMeusAlunos = () => {
     onOpen();
   };
 
+  const onClickOpenModal = () => {
+    setValue("nome_aluno", "");
+    setValue("nome_responsavel", ""); 
+    setValue("cpf_responsavel", "");
+    setValue("serie_periodo", "");
+    setValue("ano", "");
+    setValue("status", "");
+    onOpen();
+  }
+
   const onClickDelete = async (user: any) => {
     try {
       const response = await fetch(`http://localhost:4000/alunos/${user.id}`, {
@@ -231,7 +241,7 @@ const TabContentMeusAlunos = () => {
         <CardHeader>
           <div className="flex flex-row items-center justify-between w-full">
             <p className="text-lg font-semibold">Meus Alunos</p>
-            <Button color="primary" onPress={onOpen}>
+            <Button color="primary" onPress={() => onClickOpenModal()}>
               Adicionar
             </Button>
           </div>
