@@ -9,18 +9,34 @@ import {
   Divider,
   Image,
 } from "@nextui-org/react";
+import { useRouter } from "next-nprogress-bar";
 import { Toaster } from "react-hot-toast";
 import { RiArrowGoBackFill, RiArrowGoForwardFill } from "react-icons/ri";
 
 export default function Home() {
+  const router = useRouter();
+
   return (
     <section className="flex flex-col items-center justify-center md:py-10">
-      <div className="flex flex-col items-center font-bold justify-center gap-2">
-        <Image src="https://bolsalivre.com/front/img/logo_novo_bolsalivre.png" width={300} />
+      <div className="flex flex-col items-center text-center font-bold justify-center gap-2">
+        {/* <Image src="https://bolsalivre.com/front/img/logo_novo_bolsalivre.png" width={300} /> */}
         <h2 className="text-5xl text-secondary flex flex-col">
           Tenha acesso as melhores <br />{" "}
-          <b className="text-orange-600">Bolsas Escolares</b>
+          <b className="text-orange-600">Bolsas Escolares,</b>
+          <p className="text-light text-lg">
+            por valores que cabem no seu bolso!
+          </p>
         </h2>
+        <Button
+          color="primary"
+          radius="full"
+          size="lg"
+          className="text-white font-semibold"
+          endContent={<RiArrowGoForwardFill/>}
+          onPress={() => router.push("/bolsas")}
+        >
+          Ver Todas as Bolsas
+        </Button>
       </div>
       <div className="flex flex-col gap-6 my-8">
         <div className="flex-col items-baseline w-full">
@@ -56,6 +72,10 @@ export default function Home() {
                 color="default"
                 radius="lg"
                 size="sm"
+                onPress={() => {
+                  localStorage.setItem("filtro-ensino", "basico");
+                  router.push("/bolsas");
+                }}
               >
                 Clique Aqui
               </Button>
@@ -85,6 +105,10 @@ export default function Home() {
                 color="default"
                 radius="lg"
                 size="sm"
+                onPress={() => {
+                  localStorage.setItem("filtro-ensino", "fundamental");
+                  router.push("/bolsas");
+                }}
               >
                 Clique Aqui
               </Button>
@@ -114,6 +138,10 @@ export default function Home() {
                 color="default"
                 radius="lg"
                 size="sm"
+                onPress={() => {
+                  localStorage.setItem("filtro-ensino", "graduacao");
+                  router.push("/bolsas");
+                }}
               >
                 Clique Aqui
               </Button>
@@ -121,9 +149,9 @@ export default function Home() {
           </Card>
         </div>
         <div className="flex flex-col gap-6">
-          <div className="flex-col items-baseline">
+          {/* <div className="flex-col items-baseline">
             <p className="text-2xl text-secondary font-bold">
-              Colégio particulares:
+              Colégios particulares:
             </p>
             <span className="text-xs font-light">
               de uma olhada em alguns dos colégios que temos disponíveis na
@@ -155,7 +183,7 @@ export default function Home() {
             >
               <RiArrowGoForwardFill />
             </Button>
-          </div>
+          </div> */}
           <div className="flex-col items-baseline">
             <h3 className="text-2xl text-secondary font-bold">
               Transformando vidas e histórias
@@ -182,7 +210,7 @@ export default function Home() {
                 </CardHeader>
                 <Divider />
                 <CardBody>
-                  <p>
+                  <p className="font-light">
                     “Eu queria tirar minha filha da rede pública porque a
                     educação é péssima, mas não consegui pagar todo o custo de
                     uma escola particular, consegui 30% em uma escola perto da
@@ -209,7 +237,7 @@ export default function Home() {
                 </CardHeader>
                 <Divider />
                 <CardBody>
-                  <p>
+                  <p className="font-light">
                     “Eu queria tirar minha filha da rede pública porque a
                     educação é péssima, mas não consegui pagar todo o custo de
                     uma escola particular, consegui 30% em uma escola perto da
@@ -236,7 +264,7 @@ export default function Home() {
                 </CardHeader>
                 <Divider />
                 <CardBody>
-                  <p>
+                  <p className="font-light">
                     “Eu queria tirar minha filha da rede pública porque a
                     educação é péssima, mas não consegui pagar todo o custo de
                     uma escola particular, consegui 30% em uma escola perto da
@@ -249,7 +277,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <Toaster position="top-center"/>
+      <Toaster position="top-center" />
     </section>
   );
 }

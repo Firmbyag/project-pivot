@@ -43,6 +43,41 @@ router.get('/:id', (req, res) => {
   });
 });
 
+router.get('/filtrar-bolsas/:cidade?/:bairro?/:serie?', (req, res) => {
+  const { cidade, bairro, serie } = req.params;
+
+  let query = "SELECT * FROM bolsas WHERE 1=1";
+  const queryParams = [];
+
+  if (cidade) {
+    query += " AND cidade = ?";
+    queryParams.push(cidade);
+  }
+
+  if (bairro) {
+    query += " AND bairro = ?";
+    queryParams.push(bairro);
+  }
+
+  if (serie) {
+    query += " AND serie = ?";
+    queryParams.push(serie);
+  }
+
+  connection.query(query, queryParams, (err, results) => {
+    if (err) {
+      return res.status(500).send("Erro ao buscar bolsas");
+    } else {
+      if (results.length === 0) {
+        return res.status(404).send(results);
+      } else {
+        return res.status(200).send(results);
+      }
+    }
+  });
+});
+
+
 router.post("/criar", authenticateToken, async (req, res) => {
   const {
     etapa,

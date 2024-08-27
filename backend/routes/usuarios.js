@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const connection = require("../db-service/index");
+const authenticateToken = require("../middleware/authMiddleware.js");
+
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -53,6 +55,29 @@ router.post("/login", async (req, res) => {
         return res
           .status(200)
           .send({ msg: "Login efetuado com sucesso", token, results });
+      }
+    }
+  });
+});
+
+router.get('/:email', async (req, res) => {
+  const email = req.params.email;
+
+  if (!email) {
+    return res.status(400).json({ message: "O parâmetro 'email' é necessário." });
+  }
+
+  const query = "SELECT * FROM usuario WHERE email = ?";
+  connection.query(query, [email], (err, results) => {
+    if (err) {
+      return res.status(500).send("Erro ao buscar usuário");
+    } else {
+      if (results.length === 0) {
+        return res.status(404).send("Usuário não encontrado");
+      } else {
+        return res
+          .status(200)
+          .send(results);
       }
     }
   });

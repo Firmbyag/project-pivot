@@ -16,6 +16,7 @@ export const navbarMenuCities = [
 
 export const listNiteroiNeighborhood = [
   { key: "atalaia", label: "Atalaia" },
+  { key: "atalaia", label: "Atalaia" },
   { key: "badu", label: "Badu" },
   { key: "baldeador", label: "Baldeador" },
   { key: "barreto", label: "Barreto" },

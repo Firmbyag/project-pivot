@@ -111,9 +111,9 @@ const LayoutGestor = () => {
                   <div className="flex flex-col items-baseline max-w-sm gap-4">
                     <Input
                       label="Nome da Escola"
-                      placeholder="escola exemplo 123"
+                      placeholder="ex: escola exemplo 123"
                     />
-                    <Select label="Select an animal" className="max-w-xs">
+                    <Select label="Selecione o grau de ensino" className="max-w-xs">
                       {listGrausdeEnsino.map((ensino) => (
                         <SelectItem key={ensino.key}>{ensino.label}</SelectItem>
                       ))}

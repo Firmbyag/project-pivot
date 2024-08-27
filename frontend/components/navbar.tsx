@@ -35,6 +35,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Image,
   Listbox,
   ListboxItem,
   Modal,
@@ -142,32 +143,32 @@ export const Navbar = () => {
   };
 
   const registerUser = async () => {
-    const {nome, email, senha, cpf, telefone} = getValues();
+    const { nome, email, senha, cpf, telefone } = getValues();
 
     try {
-      const response = await fetch('http://localhost:4000/usuarios/cadastro', {
+      const response = await fetch("http://localhost:4000/usuarios/cadastro", {
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
           nome,
           email,
           senha,
           cpf,
-          telefone: telefone ?? ''
+          telefone: telefone ?? "",
         }),
-      })
-      const data = await response.json()
-      toast.success('Usuário cadastrado com sucesso, faça Login!')
+      });
+      const data = await response.json();
+      toast.success("Usuário cadastrado com sucesso, faça Login!");
     } catch (error) {
-      toast.error('Erro ao cadastrar usuário')
+      toast.error("Erro ao cadastrar usuário");
     }
   };
 
   const onLogout = () => {
     removeFromLocalStorage("bolsalivre_token");
-    router.push("/bolsas");
+    window.location.reload();
   };
 
   const searchInput = (
@@ -200,16 +201,18 @@ export const Navbar = () => {
         className="bg-orange-500 dark:bg-purple-800"
       >
         <NavbarBrand as="li" className="gap-3 max-w-fit">
-          <NextLink className="flex justify-start items-center gap-1" href="/">
+          <Image src="../public/logo_novo_bolsalivre_1.png" />
+          {/* <NextLink className="flex justify-start items-center gap-1" href="/">
             Bolsa Livre
-          </NextLink>
+          </NextLink> */}
         </NavbarBrand>
         <Select
           label=""
           variant="flat"
+          radius="full"
           placeholder="Filtrar por cidade"
           selectedKeys={[city]}
-          className="max-w-xs"
+          className="max-w-52"
           startContent={<BiSearch className="text-purple-900" />}
           onChange={handleSelectionChange}
         >
@@ -220,10 +223,11 @@ export const Navbar = () => {
         <Select
           label=""
           variant="flat"
+          radius="full"
           size="md"
           placeholder="Filtrar por bairro"
           startContent={<BiSearch className="text-purple-900" />}
-          className="max-w-xs"
+          className="max-w-52"
           onChange={(e) => setNeighbourhood(e.target.value)}
         >
           {city == "niterio"
@@ -245,22 +249,31 @@ export const Navbar = () => {
         <Select
           label=""
           variant="flat"
+          radius="full"
           placeholder="Filtrar por ensino"
           selectedKeys={[ensino]}
           labelPlacement="outside"
           startContent={<BiSearch className="text-purple-900" />}
-          className="max-w-xs"
+          className="max-w-52"
           onChange={(e) => setEnsino(e.target.value)}
         >
           {listGrausdeEnsino.map((ensino) => (
             <SelectItem key={ensino.key}>{ensino.label}</SelectItem>
           ))}
         </Select>
+        <Button
+          color="secondary"
+          radius="full"
+          className="text-sm font- max-w-14"
+          startContent={<BiSearch size={20} className="text-slate-200" />}
+          variant="solid"
+          onPress={handleSearch} // Adiciona a ação de busca ao clicar no botão
+        ></Button>
         <NavbarContent
           className="hidden sm:flex basis-1/5 sm:basis-full"
           justify="end"
         >
-          <NavbarItem className="hidden md:flex">
+          {/* <NavbarItem className="hidden md:flex">
             <Button
               color="secondary"
               className="text-sm font-semibold bg-white"
@@ -268,13 +281,13 @@ export const Navbar = () => {
               variant="solid"
               onPress={handleSearch} // Adiciona a ação de busca ao clicar no botão
             ></Button>
-          </NavbarItem>
+          </NavbarItem> */}
           <NavbarItem className="hidden md:flex">
             {tokenUserLogged !== undefined ? (
               <Popover showArrow placement="bottom">
                 <PopoverTrigger>
                   <Avatar
-                    className="uppercase bg-slate-200"
+                    className="uppercase bg-slate-200 cursor-pointer"
                     // color="secondary"
                     isBordered
                     name={tokenUserLogged?.nome}
@@ -454,7 +467,11 @@ export const Navbar = () => {
               </ModalBody>
               <ModalFooter>
                 {isRegistering && (
-                  <Button className="text-white" color="secondary" onPress={toggleRegistering}>
+                  <Button
+                    className="text-white"
+                    color="secondary"
+                    onPress={toggleRegistering}
+                  >
                     Voltar
                   </Button>
                 )}

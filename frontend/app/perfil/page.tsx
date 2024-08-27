@@ -1,12 +1,22 @@
 "use client";
 
+import { decodeToken } from "@/utils/token";
 import { Button, Divider } from "@nextui-org/react";
 import { useRouter } from "next-nprogress-bar";
-import React from "react";
+import React, { use, useEffect, useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
 
 const PerfilPage = () => {
+  const [user, setUser] = useState("");
+  console.log(user)
   const router = useRouter();
+  const userInfo = decodeToken();
+
+  useEffect(() => {
+    fetch(`http://localhost:4000/usuarios/${userInfo.email}`)
+      .then((res) => res.json())
+      .then((data) => setUser(data));
+  }, []);
 
   return (
     <div className="w-full h-full">
@@ -29,21 +39,29 @@ const PerfilPage = () => {
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-baseline">
             <p className="text-xs">Nome</p>
-            <label className="font-semibold" htmlFor="">valor name</label>
+            <label className="font-semibold" htmlFor="">
+              {user[0]?.nome}
+            </label>
           </div>
           <div className="flex flex-col items-baseline">
             <p className="text-xs">Email</p>
-            <label className="font-semibold" htmlFor="">valor email</label>
+            <label className="font-semibold" htmlFor="">
+              {user[0]?.email}
+            </label>
           </div>
         </div>
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-baseline">
             <p className="text-xs">CPF</p>
-            <label className="font-semibold" htmlFor="">valor cpf</label>
+            <label className="font-semibold" htmlFor="">
+              {user[0]?.cpf}
+            </label>
           </div>
           <div className="flex flex-col items-baseline">
             <p className="text-xs">Telefone</p>
-            <label className="font-semibold" htmlFor="">valor Telefone</label>
+            <label className="font-semibold" htmlFor="">
+              {user.telefone}
+            </label>
           </div>
         </div>
       </div>
