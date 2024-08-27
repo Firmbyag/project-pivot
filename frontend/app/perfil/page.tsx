@@ -60,7 +60,7 @@ const PerfilPage = () => {
           <div className="flex flex-col items-baseline">
             <p className="text-xs">Telefone</p>
             <label className="font-semibold" htmlFor="">
-              {user.telefone}
+              {user.telefone ?? 'N/A'}
             </label>
           </div>
         </div>
