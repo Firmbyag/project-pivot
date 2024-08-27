@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Button,
   Card,
@@ -13,42 +15,50 @@ import React from "react";
 import { BiCheck } from "react-icons/bi";
 
 type SchoolCardProps = {
-  onOpen: () => void;
+  // onOpen: () => void;
+  onClickVerBolsa: () => void;  
   title?: string;
   description?: string;
   value?: number;
   city?: string;
   image?: string;
+  serie: string;
 };
 
 const SchoolCard = ({
-  onOpen,
+  onClickVerBolsa,
   title,
   description,
   value,
   city,
   image,
+  serie,
 }: SchoolCardProps) => {
   return (
-    <Card className="py-4 flex-1">
-      <CardHeader className="pb-0 pt-2 px-4 flex-col items-start">
-        <p className="text-tiny uppercase font-bold">Nome da Escola</p>
-        <small className="text-default-500">Cidade:</small>
-        <small className="text-default-500">Valor:</small>
-        <Chip startContent={<BiCheck />} variant="flat" color="success">
-          Tipo de Ensino
+    <Card className="py-4 flex-1 min-w-72 max-w-72">
+      <CardHeader className="flex gap-pb-0 pt-2 px-4 flex-col items-start">
+        <p className="uppercase text-base font-bold">{title}</p>
+        <small className="text-default-500">{city}</small>
+        <small className="text-default-500">{value}</small>
+        <Chip size="sm" startContent={<BiCheck />} variant="flat" color="success">
+          Série: {serie}
         </Chip>
       </CardHeader>
       <CardBody className="overflow-visible py-2">
         <Image
           alt="Card background"
           className="object-cover rounded-xl"
-          src="https://nextui.org/images/hero-card-complete.jpeg"
+          src={image}
           width={270}
         />
       </CardBody>
       <CardFooter>
-        <Button color="secondary" variant="flat" size="sm" onPress={onOpen}>
+        <Button
+          className="text-white"
+          color="primary"
+          size="sm"
+          onPress={onClickVerBolsa}
+        >
           Ver Bolsa
         </Button>
       </CardFooter>
